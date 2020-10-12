@@ -28,33 +28,38 @@ int main(int argc, char **argv){
 	
 	connect(sockfd, (struct sockaddr *)&servaddr, sizeof(servaddr));
 	
-	printf("Enter Argument: ");
+	printf("Enter 'request' to receive the file: ");
 	scanf("%s", consoleInput);    
     
 	// sending console input
     sendto(sockfd, consoleInput, strlen(consoleInput), 0, (struct sockaddr *)&servaddr, sizeof(servaddr));
     
-    // ------ this is not the file name, same as server file name
-    FILE* file = fopen("recieved_file.txt", "a+");
+    // receive the file size
+    n = recvfrom(sockfd, buffer, 1000, 0, NULL, NULL);
+	buffer[n] = 0;
+	printf("file size: %s bytes\n", buffer); 
+    
+    int file_size = 0;
+    sscanf(buffer, "%d", &file_size);
+    
+    // open destination file to write
+    FILE* file = fopen("received_file.txt", "a+");
     if(file == NULL){
         printf("error writing file");
         exit(-1);
     }
-
-	while(1){
+	
+	int temp = 0; // to track the file size
+	
+	while(temp <= file_size){
 		n = recvfrom(sockfd, buffer, 1000, 0, NULL, NULL);
 		buffer[n] = 0;
-		// printf("%s",buffer);
-		
-        if(strcmp(buffer, "finished") == 0) {
-            break;
-        }
-		
-		fputs(buffer, file);
-		// fprintf(file, "%s", buffer);		
-		
+       		
+		// write to the file
+		fputs(buffer, file);	
+		temp += 1000; // loop for next 1000 bytes
 	}
-    printf("writing to file is finished");
-	fclose(file);
+    printf("writing to file is finished\n");
+	fclose(file); // closing the file
     return 0;
 }

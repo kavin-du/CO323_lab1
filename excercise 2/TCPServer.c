@@ -30,8 +30,12 @@ int main(int argc, char **argv){
     connfd = accept(listenfd, (struct sockaddr *)&cliaddr, &clilen);            // the uninitialized cliaddr variable is filled in with the
     
     n = recvfrom(connfd, buffer, 1000, 0, (struct sockaddr *)&cliaddr, &clilen); // information of the client by recvfrom function
-    
     buffer[n] = 0;
+            
+    
+    // sending the file size to the client
+    char file_size[] = "1239";
+	sendto(connfd, file_size, strlen(file_size), 0, (struct sockaddr *)&cliaddr, sizeof(cliaddr));
 	
 	if(strcmp(buffer, "request") == 0){
 		FILE* file = fopen("serverfile.txt", "r");  // read only
@@ -40,16 +44,24 @@ int main(int argc, char **argv){
 			exit(-1);
 		}
 		
-		while(fgets(banner, 1000, file) != NULL ){
-			sendto(connfd, banner, strlen(banner), 0, (struct sockaddr *)&cliaddr, sizeof(cliaddr));
-		}
-		sendto(connfd, "finished", strlen(banner), 0, (struct sockaddr *)&cliaddr, sizeof(cliaddr));
-		fclose(file);
+		// reading 1000 bytes at a time and sending to client
+		int count = 0;
+		int total_count = 0; // to track the total size of the file
+		int character = getc(file); // using getc() method to read file
+		
+		while(character != EOF){
+			// read 1000 bytes at a time and send to client
+			while(count < 1000 && total_count < atoi(file_size)){
+				banner[count++] = (char)character;
+				character = getc(file);
+				total_count++;
+			}
+			sendto(connfd, banner, 1000, 0, (struct sockaddr *)&cliaddr, sizeof(cliaddr));
+			count = 0;	
+			memset(banner, 0, 1000); // resetting char array each time		
+		}	
+		fclose(file); // close the file
 	}
-	
-    
-    
-    //printf("Received:%s\n", buffer);
    
     return 0;
 }
