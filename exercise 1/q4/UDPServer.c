@@ -24,20 +24,27 @@ int main(int argc, char**argv) {
 	len = sizeof(cliaddr); 
 	n = recvfrom(sockfd,mesg,1000,0,(struct sockaddr *)&cliaddr,&len); 
 	mesg[n] = 0; 
-	printf("%s\n", mesg);
+	printf("%s\n", mesg); // message from the client
+	
 	while(1){
 		time_t t;
 		time(&t);
 		char day[10], month[10], date[10], time[10], year[10];
+		
+		/* 
+			note: 
+			ctime() returns time in this format ->  Www Mmm dd hh:mm:ss yyyy
+			we need only the hh:mm:ss part
+			sscanf used to extract only the time part from the string		
+		*/
+		
 		sscanf(ctime(&t), "%s %s %s %s %s", day, month, date, time, year);
-		//printf("time: %s\n", time);
-		sleep(1);
+		
+		sleep(1); // delay for one second
+		// sending the time part from the string
 		sendto(sockfd,time,10,0,(struct sockaddr *)&cliaddr,sizeof(cliaddr)); 
 		
 	}
-	
-
-	
 
 	return 0; 
 	

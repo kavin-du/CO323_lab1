@@ -24,12 +24,11 @@ int main(int argc, char**argv) {
 	while(1){
 		n = recvfrom(sockfd,mesg,1000,0,(struct sockaddr *)&cliaddr,&len);		 
 		mesg[n] = 0; 
+		printf("Received: %s\n",mesg); 
 		
-		//strcpy(banner, mesg);
-		
+		// sending same message to the client
 		sendto(sockfd,mesg,n,0,(struct sockaddr *)&cliaddr,sizeof(cliaddr)); 
 		
-		//printf("Received: %s\n",mesg); 
 	}
 	
 	return 0; 

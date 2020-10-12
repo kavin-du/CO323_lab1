@@ -29,13 +29,16 @@ int main(int argc, char**argv) {
 	mesg[n] = 0; 
 	sscanf(mesg, "%d", &num_of_sentences);
 
-	// sending acknowledgement if > 0
+	// sending acknowledgement
 	sendto(sockfd,"ack",3,0,(struct sockaddr *)&cliaddr,sizeof(cliaddr)); 
 	
-	for(int i=0; i<num_of_sentences; i++){
+	int i = 0;
+	while(i<num_of_sentences){
+	
 		// receive message
 		n = recvfrom(sockfd,mesg,1000,0,(struct sockaddr *)&cliaddr,&len);		 
 		mesg[n] = 0;
+		printf("Received: %s\n",mesg); 
 		
 		// capitalize
 		char capitalized[1000];
@@ -48,12 +51,9 @@ int main(int argc, char**argv) {
 
 		// send to client
 		sendto(sockfd,capitalized,n,0,(struct sockaddr *)&cliaddr,sizeof(cliaddr)); 
-
+		i++;
 	}
-	//sendto(sockfd,mesg,n,0,(struct sockaddr *)&cliaddr,sizeof(cliaddr)); 
-	
-	//printf("Received: %s\n",mesg); 	
-	
+		
 	return 0; 
 	
 }

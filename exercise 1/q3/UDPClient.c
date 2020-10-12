@@ -22,6 +22,7 @@ int main(int argc, char **argv){
     printf("Enter number of sentences: ");
     scanf("%d", &num_of_sentences);
     sprintf(sendline, "%d", num_of_sentences);
+    sendline[1000] = 0;
     
     // -------------------------------------------------------
     sockfd = socket(AF_INET, SOCK_DGRAM, 0);
@@ -44,8 +45,6 @@ int main(int argc, char **argv){
     for(int i=0; i<num_of_sentences; i++){
         scanf("\n");
         scanf("%[^\n]%*c", sendline);
-        //fgets(sendline, 1000, stdin);
-        //printf("%s\n", sendline);
         sendto(sockfd, sendline, strlen(sendline), 0, (struct sockaddr *)&servaddr, sizeof(servaddr));       
     }
 

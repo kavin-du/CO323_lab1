@@ -20,6 +20,7 @@ int main(int argc, char**argv) {
 	bind(sockfd,(struct sockaddr *)&servaddr,sizeof(servaddr)); 
 	
 	len = sizeof(cliaddr); 
+	// server waits indefinitely using this while loop
 	while(1){
 		n = recvfrom(sockfd,mesg,1000,0,(struct sockaddr *)&cliaddr,&len); 
 		sendto(sockfd,banner,n,0,(struct sockaddr *)&cliaddr,sizeof(cliaddr)); 

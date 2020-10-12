@@ -30,7 +30,7 @@ int main(int argc, char **argv){
     while(1){
         n = recvfrom(sockfd, recvline, 10000, 0, NULL, NULL);
         recvline[n] = 0;
-        printf("Received: %s\n", recvline);
+        printf("Received: %s\n", recvline); // printing the time received from the server
     }
     
     return 0;

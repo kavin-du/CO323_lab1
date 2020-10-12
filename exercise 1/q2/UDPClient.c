@@ -9,7 +9,8 @@ int main(int argc, char **argv){
 
     int sockfd, n;
     struct sockaddr_in servaddr;
-    char sendline[] = "Hello UDP server! This is UDP client";
+    //char sendline[] = "Hello UDP server! This is UDP client";
+    char sendline[1000];
     char recvline[1000];
 
     if (argc != 2)
@@ -17,7 +18,11 @@ int main(int argc, char **argv){
         printf("usage:  ./%s <IP address>\n", argv[0]);
         return -1;
     }
-
+	
+	// getting message to be sent from the console
+	printf("Enter message to be sent to the server:");
+	scanf("%[^\n]%*c", sendline);
+	
     sockfd = socket(AF_INET, SOCK_DGRAM, 0);
 
     bzero(&servaddr, sizeof(servaddr));
